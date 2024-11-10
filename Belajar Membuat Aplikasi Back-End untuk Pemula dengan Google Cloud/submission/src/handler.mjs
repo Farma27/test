@@ -1,5 +1,5 @@
-const { nanoid } = require('nanoid');
-const books = require('./books');
+import { nanoid } from 'nanoid';
+import books, { push, filter, map, findIndex, splice } from './books';
 
 const addBookHandler = (request, h) => {
   const {
@@ -53,9 +53,9 @@ const addBookHandler = (request, h) => {
     updatedAt,
   };
 
-  books.push(newBook);
+  push(newBook);
 
-  const isSuccess = books.filter((book) => book.id === id).length > 0;
+  const isSuccess = filter((book) => book.id === id).length > 0;
 
   if (isSuccess) {
     const response = h
@@ -87,7 +87,7 @@ const getAllBooksHandler = (request, h) => {
       .response({
         status: 'success',
         data: {
-          books: books.map((book) => ({
+          books: map((book) => ({
             id: book.id,
             name: book.name,
             publisher: book.publisher,
@@ -99,7 +99,7 @@ const getAllBooksHandler = (request, h) => {
   }
 
   if (name) {
-    const filteredBooksName = books.filter((book) => {
+    const filteredBooksName = filter((book) => {
       const nameRegex = new RegExp(name, 'gi');
       return nameRegex.test(book.name);
     });
@@ -120,7 +120,7 @@ const getAllBooksHandler = (request, h) => {
   }
 
   if (reading) {
-    const filteredBooksReading = books.filter(
+    const filteredBooksReading = filter(
       (book) => Number(book.reading) === Number(reading),
     );
 
@@ -139,7 +139,7 @@ const getAllBooksHandler = (request, h) => {
     return response;
   }
 
-  const filteredBooksFinished = books.filter(
+  const filteredBooksFinished = filter(
     (book) => Number(book.finished) === Number(finished),
   );
 
@@ -161,7 +161,7 @@ const getAllBooksHandler = (request, h) => {
 const getBookByIdHandler = (request, h) => {
   const { bookId } = request.params;
 
-  const book = books.filter((b) => b.id === bookId)[0];
+  const book = filter((b) => b.id === bookId)[0];
 
   if (book) {
     const response = h
@@ -221,7 +221,7 @@ const editBookByIdHandler = (request, h) => {
   const finished = pageCount === readPage;
   const updatedAt = new Date().toISOString();
 
-  const index = books.findIndex((book) => book.id === bookId);
+  const index = findIndex((book) => book.id === bookId);
 
   if (index !== -1) {
     books[index] = {
@@ -259,10 +259,10 @@ const editBookByIdHandler = (request, h) => {
 const deleteBookByIdHandler = (request, h) => {
   const { bookId } = request.params;
 
-  const index = books.findIndex((book) => book.id === bookId);
+  const index = findIndex((book) => book.id === bookId);
 
   if (index !== -1) {
-    books.splice(index, 1);
+    splice(index, 1);
 
     const response = h
       .response({
@@ -282,7 +282,7 @@ const deleteBookByIdHandler = (request, h) => {
   return response;
 };
 
-module.exports = {
+export default {
   addBookHandler,
   getAllBooksHandler,
   getBookByIdHandler,

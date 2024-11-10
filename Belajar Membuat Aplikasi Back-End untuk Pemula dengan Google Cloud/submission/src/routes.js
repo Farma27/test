@@ -4,7 +4,7 @@ const {
   getBookByIdHandler,
   editBookByIdHandler,
   deleteBookByIdHandler
-} = require('./handler.mjs');
+} = require('./handler.js');
 
 const routes = [
   {
